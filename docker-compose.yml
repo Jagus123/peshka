@@ -1,0 +1,43 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+      MYSQL_DATABASE: peshka
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress123
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  wordpress:
+    image: wordpress:latest
+    restart: always
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: mysql
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress123
+      WORDPRESS_DB_NAME: peshka
+    volumes:
+      - wordpress_data:/var/www/html
+    depends_on:
+      - mysql
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: mysql
+      PMA_USER: root
+      PMA_PASSWORD: root123
+    depends_on:
+      - mysql
+
+volumes:
+  mysql_data:
+  wordpress_data:
+
